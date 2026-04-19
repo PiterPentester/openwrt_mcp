@@ -1,0 +1,24 @@
+[project]
+name = "openwrt-mcp"
+version = "0.1.0"
+description = "A fast, asynchronous Model Context Protocol (MCP) server for inspecting and diagnosing OpenWRT routers."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp",
+    "asyncssh",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.5",
+    "ruff>=0.3.0",
+    "bandit>=1.7.7"
+]
+
+[tool.bandit]
+exclude_dirs = [".venv", "tests"]
+
+[tool.pytest.ini_options]
+pythonpath = "."
