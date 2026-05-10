@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenWRT MCP Server | Next-Gen Router Diagnostics</title>
+    <meta name="description" content="A fast, asynchronous Model Context Protocol (MCP) server for inspecting and diagnosing OpenWRT routers with Human-in-the-Loop security.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container hero-content">
+            <h1>OpenWRT MCP</h1>
+            <p>Empower your AI agents with real-time network intelligence and secure router management.</p>
+            <div class="hero-btns">
+                <a href="https://github.com/PiterPentester/openwrt_mcp" class="btn btn-primary">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Powerful Capabilities</h2>
+                <p>Bridge the gap between your LLM and your network's core.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-terminal"></i></div>
+                    <h3>Async SSH</h3>
+                    <p>Built on asyncssh for high-performance, non-blocking connections to your OpenWRT hardware.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-circle-nodes"></i></div>
+                    <h3>Native UBUS</h3>
+                    <p>Direct integration with OpenWRT's microbus for structured network and wireless data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <h3>Smart Logs</h3>
+                    <p>Retrieve and parse system logs dynamically to diagnose connectivity issues in seconds.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-halved"></i></div>
+                    <h3>HITL Security</h3>
+                    <p>Human-in-the-Loop confirmation for sensitive commands like rebooting or configuration changes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
+                    <h3>DHCP Discovery</h3>
+                    <p>Instantly map connected devices with parsed lease data including MAC, IP, and Hostnames.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>FastMCP</h3>
+                    <p>Optimized with Anthropic's FastMCP framework for rapid agentic response and discovery.</p>
+                </div>
+            </div>
+
+            <div class="hitl-highlight">
+                <div class="hitl-icon"><i class="fas fa-user-check"></i></div>
+                <div>
+                    <h3>Human-in-the-Loop is Built-in</h3>
+                    <p>Safety first. Sensitive operations like <code>reboot</code> or <code>uci set</code> automatically pause execution and request explicit human approval via the MCP client elicitation protocol.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tools-section" id="tools">
+        <div class="container">
+            <div class="section-title">
+                <h2>Available Tools</h2>
+                <p>The complete MCP toolset for your OpenWRT diagnostic needs.</p>
+            </div>
+
+            <div class="tools-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tool Name</th>
+                            <th>Description</th>
+                            <th>Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-sensitive">HITL</span><span class="tool-name">execute_command</span></td>
+                            <td>Execute generic shell commands on the router.</td>
+                            <td><span class="tool-params">command (str)</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Read</span><span class="tool-name">read_router_logs</span></td>
+                            <td>Fetch system logs using <code>logread</code>.</td>
+                            <td><span class="tool-params">lines (int, default: 50)</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Diagnostic</span><span class="tool-name">ping_from_router</span></td>
+                            <td>Test connectivity from the router to an external host.</td>
+                            <td><span class="tool-params">host (str), count (int, default: 4)</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Read</span><span class="tool-name">get_ubus_network_interfaces</span></td>
+                            <td>Dump detailed network interface status from <code>ubus</code>.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Read</span><span class="tool-name">get_ubus_wireless_status</span></td>
+                            <td>Review radio physics and associated wireless clients.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Read</span><span class="tool-name">get_dhcp_leases</span></td>
+                            <td>Instantly list all connected devices and their IPs.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Quick Start</h2>
+            </div>
+            
+            <div class="code-block">
+                <span class="code-label">Installation</span>
+                <pre>git clone https://github.com/PiterPentester/openwrt_mcp.git
+cd openwrt_mcp
+uv sync</pre>
+            </div>
+
+            <div class="code-block">
+                <span class="code-label">Configuration</span>
+                <pre># Set your router credentials
+export OPENWRT_HOST="192.168.1.1"
+export OPENWRT_PASSWORD="your_password"</pre>
+            </div>
+
+            <div class="code-block">
+                <span class="code-label">Claude Desktop Config</span>
+                <pre>{
+  "mcpServers": {
+    "openwrt": {
+      "command": "uv",
+      "args": ["run", "/path/to/openwrt_mcp/main.py"],
+      "env": {
+        "OPENWRT_HOST": "192.168.1.1",
+        "OPENWRT_PASSWORD": "your_password"
+      }
+    }
+  }
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 OpenWRT MCP Server. Built with <i class="fas fa-heart" style="color: var(--danger)"></i> for the agentic future.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

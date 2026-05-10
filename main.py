@@ -35,7 +35,7 @@ async def run_ssh_command(command: str) -> str:
 
     try:
         # Run with overall timeout
-        async with asyncio.timeout(30):
+        async with asyncio.timeout(60):
             async with asyncssh.connect(**connect_kwargs) as conn:
                 result = await conn.run(command)
                 if result.exit_status != 0:
@@ -51,17 +51,32 @@ async def run_ssh_command(command: str) -> str:
                     else "Command executed successfully with no output."
                 )
     except asyncio.TimeoutError:
-        return "Error: Command timed out after 30 seconds."
+        return "Error: Command timed out after 60 seconds."
     except Exception as e:
         return f"SSH Connection Error: {str(e)}"
 
 
+SENSITIVE_PATTERNS = [
+    "reboot", "poweroff", "rm ", "uci set", "uci commit", "uci delete",
+    "opkg ", "wget", "curl", "sh ", "bash ", "ash ", "passwd", "firstboot"
+]
+
 @mcp.tool()
-async def execute_command(command: str) -> str:
+async def execute_command(command: str, confirmed: bool = False) -> str:
     """
     Execute a generic shell command on the OpenWRT router.
     Use this to run troubleshooting utilities like 'traceroute', 'ip addr', 'uci show', etc.
+    Requires 'confirmed=True' for sensitive commands like 'reboot', 'rm', or 'uci set'.
     """
+    is_sensitive = any(pattern in command for pattern in SENSITIVE_PATTERNS)
+
+    if is_sensitive and not confirmed:
+        return (
+            f"SENSITIVE COMMAND DETECTED: {command}\n\n"
+            "This command could potentially disrupt your router's operation. "
+            "To proceed, please confirm your intent by asking me to 'Confirm' or 'Proceed'."
+        )
+
     return await run_ssh_command(command)
 
 

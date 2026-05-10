@@ -345,6 +345,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "asyncssh" },
     { name = "mcp" },
+    { name = "pydantic" },
 ]
 
 [package.dev-dependencies]
@@ -359,6 +360,7 @@ dev = [
 requires-dist = [
     { name = "asyncssh" },
     { name = "mcp" },
+    { name = "pydantic" },
 ]
 
 [package.metadata.requires-dev]

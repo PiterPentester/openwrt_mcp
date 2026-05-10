@@ -16,6 +16,7 @@ Connect your LLMs and AI agents directly to your home network's backbone, giving
   - `get_ubus_wireless_status()`: Review radio stats, signal, and noise gracefully.
   - `get_dhcp_leases()`: Parses `/tmp/dhcp.leases` into readable MAC, IP, and Hostname info.
 - **Generic Command Execution**: Run any specific OpenWRT troubleshooting command over SSH.
+- **Human-in-the-Loop (HITL)**: Automatically requests human confirmation via the MCP client for sensitive operations like `reboot`, `rm`, or configuration changes using `uci`.
 
 ## 📦 Prerequisites
 
