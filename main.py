@@ -57,9 +57,22 @@ async def run_ssh_command(command: str) -> str:
 
 
 SENSITIVE_PATTERNS = [
-    "reboot", "poweroff", "rm ", "uci set", "uci commit", "uci delete",
-    "opkg ", "wget", "curl", "sh ", "bash ", "ash ", "passwd", "firstboot"
+    "reboot",
+    "poweroff",
+    "rm ",
+    "uci set",
+    "uci commit",
+    "uci delete",
+    "opkg ",
+    "wget",
+    "curl",
+    "sh ",
+    "bash ",
+    "ash ",
+    "passwd",
+    "firstboot",
 ]
+
 
 @mcp.tool()
 async def execute_command(command: str, confirmed: bool = False) -> str:

@@ -69,7 +69,7 @@
                 <div class="hitl-icon"><i class="fas fa-user-check"></i></div>
                 <div>
                     <h3>Human-in-the-Loop is Built-in</h3>
-                    <p>Safety first. Sensitive operations like <code>reboot</code> or <code>uci set</code> automatically pause execution and request explicit human approval via the MCP client elicitation protocol.</p>
+                    <p>Safety first. Sensitive operations like <code>reboot</code> or <code>uci set</code> require a <code>confirmed=true</code> flag. If executed without it, the server returns a warning prompt to ensure explicit approval before proceeding.</p>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@
                         <tr>
                             <td><span class="badge badge-sensitive">HITL</span><span class="tool-name">execute_command</span></td>
                             <td>Execute generic shell commands on the router.</td>
-                            <td><span class="tool-params">command (str)</span></td>
+                            <td><span class="tool-params">command (str), confirmed (bool, default: false)</span></td>
                         </tr>
                         <tr>
                             <td><span class="badge badge-read">Read</span><span class="tool-name">read_router_logs</span></td>

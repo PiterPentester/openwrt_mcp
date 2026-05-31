@@ -56,8 +56,7 @@ async def test_run_ssh_command_no_host():
 async def test_execute_command():
     with patch("main.run_ssh_command", new_callable=AsyncMock) as mock_run:
         mock_run.return_value = "traceroute output"
-        mock_ctx = MagicMock()
-        res = await main.execute_command(mock_ctx, "traceroute 8.8.8.8")
+        res = await main.execute_command("traceroute 8.8.8.8")
         assert res == "traceroute output"
         mock_run.assert_called_once_with("traceroute 8.8.8.8")
 
@@ -65,23 +64,16 @@ async def test_execute_command():
 @pytest.mark.asyncio
 async def test_execute_command_sensitive():
     with patch("main.run_ssh_command", new_callable=AsyncMock) as mock_run:
-        mock_ctx = MagicMock()
-        mock_ctx.info = AsyncMock()
-        mock_ctx.elicit = AsyncMock()
-        
-        # Test confirmation: Yes
-        mock_ctx.elicit.return_value = MagicMock(confirm=True)
+        # Test sensitive command without confirmation
+        res = await main.execute_command("reboot")
+        assert "SENSITIVE COMMAND DETECTED" in res
+        mock_run.assert_not_called()
+
+        # Test sensitive command with confirmation
         mock_run.return_value = "rebooting"
-        res = await main.execute_command(mock_ctx, "reboot")
+        res = await main.execute_command("reboot", confirmed=True)
         assert res == "rebooting"
-        mock_ctx.elicit.assert_called_once()
-        
-        # Test confirmation: No
-        mock_ctx.elicit.reset_mock()
-        mock_ctx.elicit.return_value = MagicMock(confirm=False)
-        res = await main.execute_command(mock_ctx, "rm -rf /")
-        assert res == "Command cancelled by user."
-        mock_run.assert_called_once() # Still only the first call from 'reboot'
+        mock_run.assert_called_once_with("reboot")
 
 
 @pytest.mark.asyncio
