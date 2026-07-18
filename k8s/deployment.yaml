@@ -1,0 +1,95 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openwrt-mcp-config
+  namespace: default
+data:
+  # IP or Host of your OpenWRT router reachable from the K8s cluster
+  OPENWRT_HOST: "192.168.1.1"
+  OPENWRT_PORT: "22"
+  OPENWRT_USER: "root"
+  ENABLE_COMMAND_VALIDATION: "true"
+  ENABLE_AUDIT_LOGGING: "true"
+  SSH_TIMEOUT: "30"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openwrt-mcp
+  namespace: default
+  labels:
+    app: openwrt-mcp
+spec:
+  replicas: 1 # Kept at 1 to avoid concurrent connection conflicts on the router
+  selector:
+    matchLabels:
+      app: openwrt-mcp
+  template:
+    metadata:
+      labels:
+        app: openwrt-mcp
+    spec:
+      containers:
+        - name: openwrt-mcp
+          image: ghcr.io/piterpentester/openwrt-mcp:latest
+          imagePullPolicy: IfNotPresent
+          # All environment variables mapped directly from ConfigMap and Secrets
+          env:
+            - name: OPENWRT_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: openwrt-mcp-config
+                  key: OPENWRT_HOST
+            - name: OPENWRT_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: openwrt-mcp-config
+                  key: OPENWRT_PORT
+            - name: OPENWRT_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: openwrt-mcp-config
+                  key: OPENWRT_USER
+            - name: ENABLE_COMMAND_VALIDATION
+              valueFrom:
+                configMapKeyRef:
+                  name: openwrt-mcp-config
+                  key: ENABLE_COMMAND_VALIDATION
+            - name: ENABLE_AUDIT_LOGGING
+              valueFrom:
+                configMapKeyRef:
+                  name: openwrt-mcp-config
+                  key: ENABLE_AUDIT_LOGGING
+            - name: SSH_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: openwrt-mcp-config
+                  key: SSH_TIMEOUT
+
+            # The SSH password injected securely
+            - name: OPENWRT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: openwrt-mcp-secrets
+                  key: OPENWRT_PASSWORD
+
+          securityContext:
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openwrt-mcp
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app: openwrt-mcp

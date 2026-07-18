@@ -1,0 +1,84 @@
+name: OpenWRT MCP CI/CD
+
+on:
+  push:
+    branches: ["master", "main"]
+    paths-ignore:
+      - "docs/**"
+  pull_request:
+    branches: ["master", "main"]
+    paths-ignore:
+      - "docs/**"
+  workflow_dispatch:
+    inputs:
+      push_image:
+        description: "Push the Docker image?"
+        required: false
+        default: "false"
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: openwrt_mcp
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Helper to lowercase the repo owner name for Docker
+      - name: Get lower case owner name
+        id: owner
+        run: |
+          echo "val=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+      - name: Get short SHA
+        id: slug
+        run: echo "sha8=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_OUTPUT
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event.inputs.push_image == 'true' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.owner.outputs.val }}/${{ env.IMAGE_NAME }}:${{ steps.slug.outputs.sha8 }}
+            ${{ (github.event.inputs.push_image == 'true' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && format('{0}/{1}/{2}:latest', env.REGISTRY, steps.owner.outputs.val, env.IMAGE_NAME) || '' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update Kubernetes resources
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && github.event_name != 'pull_request'
+        run: |
+          cd k8s
+          # Replace image tag. Matches "image: anything" and replaces with full GHCR path + SHA
+          # using 's|image: .*|...|' might be too broad if indented, so we match whitespace
+          sed -i 's|image: .*openwrt-mcp.*|image: ${{ env.REGISTRY }}/${{ steps.owner.outputs.val }}/${{ env.IMAGE_NAME }}:${{ steps.slug.outputs.sha8 }}|' deployment.yaml
+          
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add deployment.yaml
+          git commit -m "Update openwrt-mcp image tag to ${{ steps.slug.outputs.sha8 }} [skip ci]"
+          git push

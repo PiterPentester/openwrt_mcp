@@ -103,7 +103,7 @@
                             <td><span class="tool-params">lines (int, default: 50)</span></td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-read">Diagnostic</span><span class="tool-name">ping_from_router</span></td>
+                            <td><span class="badge badge-read">Diag</span><span class="tool-name">ping_from_router</span></td>
                             <td>Test connectivity from the router to an external host.</td>
                             <td><span class="tool-params">host (str), count (int, default: 4)</span></td>
                         </tr>
@@ -121,6 +121,41 @@
                             <td><span class="badge badge-read">Read</span><span class="tool-name">get_dhcp_leases</span></td>
                             <td>Instantly list all connected devices and their IPs.</td>
                             <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Diag</span><span class="tool-name">run_speedtest</span></td>
+                            <td>Run an internet speed test directly from the router.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Read</span><span class="tool-name">get_context</span></td>
+                            <td>Retrieve OpenWRT version, CPU, memory, board model, uptime, and load.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Diag</span><span class="tool-name">get_routing_table</span></td>
+                            <td>Retrieve active IPv4 and IPv6 routes.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Read</span><span class="tool-name">get_firewall_rules</span></td>
+                            <td>Retrieve firewall zones and rules configured via UCI.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Diag</span><span class="tool-name">check_internet_connection</span></td>
+                            <td>Run a combined WAN ping, DNS lookup, and HTTP check.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-read">Read</span><span class="tool-name">get_installed_software</span></td>
+                            <td>List all packages currently installed on the router via <code>apk info</code>.</td>
+                            <td><span class="tool-params">None</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-sensitive">HITL</span><span class="tool-name">install_software</span></td>
+                            <td>Install a package on the router via <code>apk add</code>.</td>
+                            <td><span class="tool-params">package (str), confirmed (bool, default: false)</span></td>
                         </tr>
                     </tbody>
                 </table>

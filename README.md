@@ -15,8 +15,16 @@ Connect your LLMs and AI agents directly to your home network's backbone, giving
   - `get_ubus_network_interfaces()`: Dump structured interface data natively from `ubus`.
   - `get_ubus_wireless_status()`: Review radio stats, signal, and noise gracefully.
   - `get_dhcp_leases()`: Parses `/tmp/dhcp.leases` into readable MAC, IP, and Hostname info.
+  - `run_speedtest()`: Run an internet bandwidth test directly from the router using `speedtest` (with JSON parsing and raw output fallback).
+  - `get_context()`: Retrieve detailed board, OS, CPU architecture, memory usage, uptime, and load statistics.
+  - `get_routing_table()`: Dump IPv4 and IPv6 active routes (`ip route show` / `ip -6 route show`).
+  - `get_firewall_rules()`: Retrieve configured firewall zones, redirects, and rules via UCI.
+  - `check_internet_connection()`: Perform a high-level connectivity check (DNS lookup, ICMP ping, HTTP test) to pinpoint wan failures.
+- **Software Management (Alpine `apk` based)**:
+  - `get_installed_software()`: List installed software packages using `apk info`.
+  - `install_software(package, confirmed)`: Safe package installer using `apk add` (includes disk-space check and requires `confirmed=True`).
 - **Generic Command Execution**: Run troubleshooting commands over SSH via `execute_command(command, confirmed)`.
-- **Human-in-the-Loop (HITL)**: Protects against disruptive actions. Running sensitive commands (e.g., `reboot`, `rm`, or `uci` changes) without setting `confirmed=True` returns a warning prompt asking the agent/user to confirm and re-run the tool with the confirmation flag set to `True`.
+- **Human-in-the-Loop (HITL)**: Protects against disruptive actions. Running sensitive commands (e.g., `reboot`, `rm`, `apk`, or `uci` changes) without setting `confirmed=True` returns a warning prompt asking the agent/user to confirm and re-run the tool with the confirmation flag set to `True`.
 
 ## 📦 Prerequisites
 

@@ -9,3 +9,8 @@ wheels/
 .pytest_cache
 .venv
 ideas/
+.env
+
+.DS_Store
+
+k8s/secrets.yaml
