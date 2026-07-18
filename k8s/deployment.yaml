@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: openwrt-mcp
-          image: ghcr.io/piterpentester/openwrt-mcp:latest
+          image: ghcr.io/piterpentester/openwrt_mcp:6b64754d
           imagePullPolicy: IfNotPresent
           # All environment variables mapped directly from ConfigMap and Secrets
           env:
